@@ -745,10 +745,13 @@ function openModal(t) {
   if (t.status === 'claimed') {
     cta.innerHTML = '<button class="btn-claimed" disabled>Claimed</button>';
   } else {
-    const subj = encodeURIComponent('Claim ' + t.msa_title);
-    const body = encodeURIComponent("I'd like to claim the " + t.msa_title + ' MSA at ' + fmtMoney(t.monthly_price) + '/mo. Please send me the next steps.');
-    const href = 'mailto:hello@auctionleads.io?subject=' + subj + '&body=' + body;
-    cta.innerHTML = '<a class="btn-claim" href="' + href + '">Claim This MSA</a>';
+    const stripeLinks = {
+      "Premium MSA": "https://buy.stripe.com/test_aFadR85Op9CA8ka5aT9Zm00",
+      "Standard MSA": "https://buy.stripe.com/test_6oU28q90BbKI43UeLt9Zm01",
+      "Starter MSA": "https://buy.stripe.com/test_dRm28qfoZ020fMCavd9Zm02"
+    };
+    const href = stripeLinks[t.volume_tier] || '#';
+    cta.innerHTML = '<a class="btn-claim" href="' + href + '" target="_blank" rel="noopener">Claim This MSA</a>';
   }
 
   modal.classList.add('open');
