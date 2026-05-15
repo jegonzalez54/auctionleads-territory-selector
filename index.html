@@ -746,9 +746,9 @@ function openModal(t) {
     cta.innerHTML = '<button class="btn-claimed" disabled>Claimed</button>';
   } else {
     const stripeLinks = {
-      "Premium MSA": "https://buy.stripe.com/test_aFadR85Op9CA8ka5aT9Zm00",
-      "Standard MSA": "https://buy.stripe.com/test_6oU28q90BbKI43UeLt9Zm01",
-      "Starter MSA": "https://buy.stripe.com/test_dRm28qfoZ020fMCavd9Zm02"
+      "Premium MSA": "https://buy.stripe.com/8x2dR84Qhb5j3TZel6gw000",
+      "Standard MSA": "https://buy.stripe.com/4gM5kC82ta1f62790Mgw004",
+      "Starter MSA": "https://buy.stripe.com/3cI28qgyZ6P30HNb8Ugw003"
     };
     const href = stripeLinks[t.volume_tier] || '#';
     cta.innerHTML = '<a class="btn-claim" href="' + href + '" target="_blank" rel="noopener">Claim This MSA</a>';
