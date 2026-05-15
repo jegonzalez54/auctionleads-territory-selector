@@ -535,6 +535,45 @@
     .logo-text .tagline { font-size: 9px; }
     .logo-mark { width: 36px; height: 36px; font-size: 14px; }
   }
+
+  /* ======= EARLYBIRD PRICING ======= */
+  .price-original {
+    font-size: 14px;
+    color: #94A3B8;
+    text-decoration: line-through;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .price-earlybird-label {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(251,191,36,0.18), rgba(245,158,11,0.12));
+    border: 1px solid rgba(245,158,11,0.35);
+    color: #FBBF24;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    margin-top: 4px;
+  }
+  .modal-price .price-original {
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+  .modal-earlybird-label {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(251,191,36,0.18), rgba(245,158,11,0.12));
+    border: 1px solid rgba(245,158,11,0.35);
+    color: #FBBF24;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
 </style>
 </head>
 <body>
@@ -590,6 +629,7 @@
       <div class="modal-price">
         <div class="v" id="modal-price"></div>
         <div class="p">per month</div>
+      <div class="modal-earlybird-label" id="modal-earlybird" style="display:none;">Earlybird Pricing</div>
       </div>
       <div id="modal-badge"></div>
     </div>
@@ -607,6 +647,15 @@ const TERRITORIES = [{"cbsa_code":"10180","msa_title":"Abilene, TX","states":"Te
 
 const TIER_ORDER = { "Premium MSA": 0, "Standard MSA": 1, "Starter MSA": 2 };
 const fmtMoney = c => "$" + Math.round(c / 100).toLocaleString();
+
+const EARLYBIRD_PRICES = {
+  "Premium MSA": 99900,
+  "Standard MSA": 79900,
+  "Starter MSA": 49900
+};
+function fmtEarlybird(t) {
+  return EARLYBIRD_PRICES[t.volume_tier] ? fmtMoney(EARLYBIRD_PRICES[t.volume_tier]) : fmtMoney(t.monthly_price);
+}
 
 // derive distinct states (split multi-state MSAs)
 const stateSet = new Set();
@@ -632,7 +681,7 @@ const totalClaim = TERRITORIES.filter(t => t.status === 'claimed').length;
 document.getElementById('stat-available').textContent = totalAvail;
 document.getElementById('stat-claimed').textContent = totalClaim;
 document.getElementById('stat-states').textContent = states.length;
-document.getElementById('top-count').textContent = totalAvail.toLocaleString() + " territories available";
+document.getElementById('top-count').textContent = totalAvail.toLocaleString() + " territories available - Earlybird pricing!";
 
 function tierClass(t) {
   if (t === 'Premium MSA') return 'badge-premium';
@@ -690,8 +739,9 @@ function render() {
       '</div>',
       '<div class="card-foot">',
       '  <div class="price">',
-      '    <span class="price-value">' + fmtMoney(t.monthly_price) + '</span>',
-      '    <span class="price-period">per month</span>',
+      '    <span class="price-original">' + fmtMoney(t.monthly_price) + '</span>',
+      '    <span class="price-value">' + fmtEarlybird(t) + '<span style="font-size:14px;font-weight:600;color:#94A3B8">/mo</span></span>',
+      '    <span class="price-earlybird-label">Earlybird Pricing</span>',
       '  </div>',
       '  <span class="hover-cue">Click to view -&gt;</span>',
       '</div>'
@@ -720,7 +770,8 @@ function openModal(t) {
   lastFocus = document.activeElement;
   document.getElementById('modal-title').textContent = t.msa_title;
   document.getElementById('modal-meta').textContent = t.states + ' | ' + (t.county_count || 0) + ' counties';
-  document.getElementById('modal-price').textContent = fmtMoney(t.monthly_price);
+  document.getElementById('modal-price').innerHTML = '<span class="price-original">' + fmtMoney(t.monthly_price) + '</span><br>' + fmtEarlybird(t);
+  document.getElementById('modal-earlybird').style.display = 'block';
 
   const badge = t.status === 'claimed'
     ? '<span class="badge badge-claimed">Claimed</span>'
@@ -746,9 +797,9 @@ function openModal(t) {
     cta.innerHTML = '<button class="btn-claimed" disabled>Claimed</button>';
   } else {
     const stripeLinks = {
-      "Premium MSA": "https://buy.stripe.com/8x2dR84Qhb5j3TZel6gw000",
-      "Standard MSA": "https://buy.stripe.com/4gM5kC82ta1f62790Mgw004",
-      "Starter MSA": "https://buy.stripe.com/3cI28qgyZ6P30HNb8Ugw003"
+      "Premium MSA": "https://buy.stripe.com/00w9ASaaB4GV4Y35OAgw007",
+      "Standard MSA": "https://buy.stripe.com/aFa3cu2I9flz9ejgtegw006",
+      "Starter MSA": "https://buy.stripe.com/3cIeVcdmNehv0HN4Kwgw005"
     };
     const href = stripeLinks[t.volume_tier] || '#';
     cta.innerHTML = '<a class="btn-claim" href="' + href + '" target="_blank" rel="noopener">Claim This MSA</a>';
